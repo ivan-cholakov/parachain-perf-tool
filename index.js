@@ -63,6 +63,42 @@ const fundUser = async (api) => {
 
 let currentNonce;
 
+// const generateTransactions = async (api) => {
+//   const keyring = new Keyring({ type: 'sr25519' });
+//   const user = keyring.addFromUri(USER_PRIVATE_KEY);
+
+//   if (!currentNonce) {
+//     currentNonce = await api.rpc.system.accountNextIndex(USER_ADDRESS);
+//   }
+
+//   let count = 0
+
+//   for (let i = 0; i < MAX_TRANSACTIONS; i++) {
+
+//     currentAmount += 1;
+
+//     const txHash = await api.tx.balances.transfer(RECIPIENT_ADDRESS, currentAmount).signAndSend(user, { nonce: currentNonce });
+
+//     const blockHeader = await api.rpc.chain.getHeader();
+//     const blockNumber = blockHeader.number.toNumber();
+//     const timestampData = await api.query.timestamp.now();
+//     const timestamp = timestampData ? new Date(timestampData.toNumber()) : 'N/A';
+
+//     const logMessage = formatTransactionLog(blockNumber, timestamp, USER_ADDRESS, currentNonce, RECIPIENT_ADDRESS, currentAmount, txHash);
+//     logGeneratedTransaction(logMessage);
+
+
+
+//     currentNonce++;
+//     count++;
+
+//     if ((i + 1) % 100 === 0) {
+//       await new Promise(resolve => setTimeout(resolve, 5000)); // Pause for 5 seconds
+//       // currentNonce = await api.rpc.system.accountNextIndex(USER_ADDRESS); // Refresh the currentNonce
+//     }
+//   }
+// };
+
 const generateTransactions = async (api) => {
   const keyring = new Keyring({ type: 'sr25519' });
   const user = keyring.addFromUri(USER_PRIVATE_KEY);
@@ -71,10 +107,7 @@ const generateTransactions = async (api) => {
     currentNonce = await api.rpc.system.accountNextIndex(USER_ADDRESS);
   }
 
-  let count = 0
-
   for (let i = 0; i < MAX_TRANSACTIONS; i++) {
-
     currentAmount += 1;
 
     const txHash = await api.tx.balances.transfer(RECIPIENT_ADDRESS, currentAmount).signAndSend(user, { nonce: currentNonce });
@@ -88,13 +121,10 @@ const generateTransactions = async (api) => {
     logGeneratedTransaction(logMessage);
 
 
-
     currentNonce++;
-    count++;
 
-    if ((i + 1) % 100 === 0) {
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Pause for 5 seconds
-      // currentNonce = await api.rpc.system.accountNextIndex(USER_ADDRESS); // Refresh the currentNonce
+    if ((i + 1) % TRANSACTIONS_PER_BLOCK === 0) {
+      await new Promise(resolve => setTimeout(resolve, api.consts.timestamp.minimumPeriod * 2));
     }
   }
 };
