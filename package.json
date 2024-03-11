@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@polkadot/api": "^10.9.1",
+    "@polkadot/util": "^12.5.1",
     "dotenv": "^16.3.1"
   }
 }

@@ -11,7 +11,7 @@ const INITIAL_TRANSFER_AMOUNT = parseInt(process.env.INITIAL_TRANSFER_AMOUNT, 10
 const SERVICE_RUN_TIME = parseInt(process.env.SERVICE_RUN_TIME, 10) || 60000;
 const MAX_TRANSACTIONS = parseInt(process.env.MAX_TRANSACTIONS, 10) || 100;
 const TRANSACTIONS_PER_BLOCK = parseInt(process.env.TRANSACTIONS_PER_BLOCK, 10) || 10;
-// const FUNDER_PRIVATE_KEY = process.env.FUNDER_PRIVATE_KEY || '';
+const FUNDER_PRIVATE_KEY = process.env.FUNDER_PRIVATE_KEY || '';
 const RECIPIENT_ADDRESS = process.env.RECIPIENT_ADDRESS ||'';
 
 let currentTransactions = 0;
@@ -55,7 +55,7 @@ const connectToParachain = async () => {
 
 const fundUser = async (api) => {
   const keyring = new Keyring({ type: 'sr25519' });
-  const funder = keyring.addFromUri(FUNDER_PRIVATE_KEY);
+  const funder = keyring.addFrom(FUNDER_PRIVATE_KEY);
 
   const txHash = await api.tx.balances.transfer(USER_ADDRESS, currentAmount).signAndSend(funder);
   logTransaction(`Funded user ${USER_ADDRESS} with ${currentAmount} tokens. Transaction Hash: ${txHash}`);
