@@ -5,7 +5,7 @@ This tools monitors the flow of transactions
 Copy `.env.example` into `.env`
 
 Set env variables
-code```
+```
 # Parachain connection URL
 PARACHAIN_URL=
 
