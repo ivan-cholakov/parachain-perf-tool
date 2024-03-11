@@ -132,3 +132,5 @@ dist
 
 node_modules
 .env
+
+generated_transactions.txt
